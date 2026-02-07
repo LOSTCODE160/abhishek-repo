@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confidential Case File: #143-LUV</title>
+    <style>
+        /* 
+         * ❤️ CSS VARIABLES & THEME
+         * Soft, romantic, medical aesthetic
+         */
+        :root {
+            /* Colors */
+            --primary: #d90429;
+            /* Deep romantic red */
+            --accent: #ef233c;
+            /* Bright red for interactive elements */
+            --soft-pink: #ffccd5;
+            /* Pastel pink background */
+            --cream: #fff0f3;
+            /* Creamy white for cards */
+            --text-main: #2b2d42;
+            /* Dark navy for readability */
+            --text-light: #8d99ae;
+            /* Muted text */
+            --success: #06d6a0;
+            /* Green */
+            --paper: #ffffff;
+            /* Pure white paper */
+
+            /* Shadows & Depth */
+            --shadow-card: 0 10px 30px rgba(217, 4, 41, 0.15);
+            --shadow-float: 0 20px 40px rgba(0, 0, 0, 0.1);
+
+            /* Typography */
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --font-mono: 'Courier New', Courier, monospace;
+            /* For medical data */
+            --font-script: 'Segoe Script', 'Brush Script MT', cursive;
+            /* For signature */
+
+            /* Transitions */
+            --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* RESET */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--soft-pink);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.4) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.4) 0%, transparent 20%);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            /* Prevent scrolling, handle pages */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        /* BACKGROUND ELEMENTS */
+        .bg-element {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        /* CONTAINER */
+        #app-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            max-height: 800px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* PAGE SYSTEM */
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 2rem 1rem;
+            /* More space on mobile */
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            /* Enable scroll */
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            /* Smooth mobile scroll */
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(50px) scale(0.95);
+            transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+            background: transparent;
+        }
+
+        /* Safe Centering for Pages */
+        .page>* {
+            margin-top: auto;
+            margin-bottom: auto;
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 500px;
+            /* Ensure content doesn't stretch too wide */
+        }
+
+        .page.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0) scale(1);
+            z-index: 5;
+        }
+
+        .page.prev {
+            opacity: 0;
+            transform: translateX(-50px) scale(0.95);
+            pointer-events: none;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--paper);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 100%;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--primary);
+        }
+
+        /* TYPOGRAPHY */
+        h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        h2 {
+            color: var(--text-main);
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        h3 {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        p {
+            line-height: 1.6;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+
+        .mono-text {
+            font-family: var(--font-mono);
+            color: var(--text-main);
+        }
+
+        /* PAGE 1: COVER */
+        .stamp-box {
+            border: 4px double var(--primary);
+            color: var(--primary);
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            transform: rotate(-12deg);
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            -webkit-mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.5"/></svg>');
+            mask-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="1.5" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.5"/></svg>');
+            animation: stampIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes stampIn {
+            from {
+                transform: scale(2) rotate(-12deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(-12deg);
+                opacity: 0.8;
+            }
+        }
+
+        /* PAGE 2: TABLE */
+        .medical-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .medical-table td {
+            padding: 12px 8px;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .medical-table td:first-child {
+            font-weight: 700;
+            color: var(--text-light);
+            width: 40%;
+        }
+
+        .status-blink {
+            color: var(--primary);
+            font-weight: 800;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* PAGE 3: TYPING */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s step-start infinite;
+            color: var(--primary);
+        }
+
+        .heart-beat {
+            font-size: 3rem;
+            color: var(--primary);
+            margin: 1rem auto;
+            animation: heartBeat 1.2s infinite;
+            text-align: center;
+            display: block;
+        }
+
+        @keyframes heartBeat {
+            0% {
+                transform: scale(1);
+            }
+
+            14% {
+                transform: scale(1.3);
+            }
+
+            28% {
+                transform: scale(1);
+            }
+
+            42% {
+                transform: scale(1.3);
+            }
+
+            70% {
+                transform: scale(1);
+            }
+        }
+
+        /* PAGE 4: LIST */
+        .symptom-list {
+            list-style: none;
+            width: 100%;
+        }
+
+        .symptom-list li {
+            background: #fff5f7;
+            margin-bottom: 0.8rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .symptom-list li:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            background: #ffe3e8;
+        }
+
+        .symptom-icon {
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        /* PAGE 6: PRESCRIPTION */
+        .prescription-pad {
+            border: 2px solid #eee;
+            background: #fff;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .rx-header {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: serif;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        /* BUTTONS */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(217, 4, 41, 0.3);
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(217, 4, 41, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-light);
+            box-shadow: none;
+            border: 2px solid #eee;
+        }
+
+        .btn-secondary:hover {
+            background: #eee;
+            color: var(--text-main);
+            box-shadow: none;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* NAVIGATION ARROW */
+        .nav-next {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            color: var(--primary);
+            transition: all 0.2s;
+            border: none;
+            z-index: 20;
+        }
+
+        .nav-next:hover {
+            transform: scale(1.1);
+            background: white;
+        }
+
+        .hidden-nav {
+            display: none !important;
+        }
+
+        /* SUCCESS / ERROR SCREENS */
+        .full-screen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 240, 243, 0.95);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .full-screen-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ACCESSIBILITY */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* CONFETTI CANVAS */
+        #confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 200;
+        }
+
+        /* FLOWER CANVAS */
+        #flower-canvas {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 250px;
+            pointer-events: none;
+            z-index: 99;
+            /* Behind overlay elements but visible */
+        }
+
+        /* SIGNATURE BANNER */
+        .signature-banner {
+            position: relative;
+            margin-top: 20px;
+            /* Reduced from 40px */
+            padding: 20px 40px;
+            /* Slightly tighter padding */
+            background: rgba(255, 255, 255, 0.85);
+            /* More opaque */
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(217, 4, 41, 0.15);
+            display: inline-block;
+            opacity: 0;
+            animation: fadeInBanner 2s ease-out forwards 1.5s;
+            z-index: 102;
+            /* Ensure it stays above flowers */
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .signature-content {
+            font-family: 'Brush Script MT', 'Segoe Script', 'Great Vibes', cursive;
+            font-size: 3rem;
+            color: #d90429;
+            text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.5);
+            position: relative;
+            z-index: 2;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .decor-flower {
+            position: absolute;
+            z-index: 1;
+            opacity: 0.9;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.05));
+            animation: floatDecor 4s ease-in-out infinite;
+        }
+
+        @keyframes fadeInBanner {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes floatDecor {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-3px) rotate(5deg);
+            }
+        }
+
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .photo-frame {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            aspect-ratio: 3/4;
+            /* Vertical portrait style */
+        }
+
+        .photo-frame:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* IMPROVED SYMPTOM LAYOUT */
+        .symptom-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 0;
+            margin: 0;
+        }
+
+        .symptom-list li {
+            list-style: none;
+            background: #fff5f7;
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid rgba(255, 183, 178, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .symptom-list li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(217, 4, 41, 0.08);
+            border-color: rgba(255, 183, 178, 0.6);
+        }
+
+        .symptom-list li.active {
+            background: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 10px 25px rgba(217, 4, 41, 0.12);
+        }
+
+        /* 1. HEADER ROW */
+        .symptom-header {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 1rem;
+        }
+
+        .symptom-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .symptom-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        /* 2. CLINICAL NOTE BLOCK */
+        .symptom-reason {
+            display: none;
+            width: 100%;
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+            border-top: 1px dashed rgba(217, 4, 41, 0.2);
+            animation: slideDownFade 0.4s ease-out forwards;
+        }
+
+        .symptom-list li.active .symptom-reason {
+            display: block;
+        }
+
+        .clinical-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 1rem;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .clinical-label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        /* 3. PHOTO SECTION */
+        .symptom-photos-inline {
+            display: none;
+            margin-top: 1rem;
+            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            opacity: 0;
+            animation: fadeUp 0.5s ease-out 0.2s forwards;
+        }
+
+        .symptom-list li.show-photos .symptom-photos-inline {
+            display: grid;
+        }
+
+        .inline-photo {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .inline-photo:hover {
+            transform: scale(1.03);
+        }
+
+        /* Click Hint */
+        .click-hint {
+            font-size: 0.8rem;
+            color: var(--primary);
+            text-align: center;
+            margin-top: 0.5rem;
+            opacity: 0.8;
+            font-style: italic;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+        }
+
+        @keyframes slideDownFade {}
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            .photo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- VISUAL DECORS (background) -->
+    <div class="bg-element" style="top: 10%; left: 10%; font-size: 3rem;">🌸</div>
+    <div class="bg-element" style="top: 20%; right: 15%; font-size: 2rem;">💖</div>
+    <div class="bg-element" style="bottom: 15%; left: 20%; font-size: 2.5rem;">🌹</div>
+    <div class="bg-element" style="bottom: 10%; right: 10%; font-size: 3rem;">✨</div>
+
+    <div id="app-container">
+
+        <!-- PAGE 1: COVER -->
+        <section id="page-1" class="page active" aria-label="Cover Page">
+            <div class="card" style="align-items: center; text-align: center; border-top: 8px solid var(--primary);">
+                <div class="stamp-box">CONFIDENTIAL</div>
+                <h1>Department of Cardiology</h1>
+                <h3>Patient Assessment Record</h3>
+                <div style="font-size: 4rem; margin: 2rem 0;">📁</div>
+                <p><strong>Contains:</strong> Sensitive Medical Data</p>
+                <p style="color: var(--text-light); font-size: 0.9rem;">Authorized Personnel Only</p>
+
+                <button class="btn" onclick="nextPage()">
+                    Open Patient File <span>🔓</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- PAGE 2: PATIENT INFO -->
+        <section id="page-2" class="page" aria-label="Patient Information">
+            <div class="card">
+                <h2>Patient Information</h2>
+                <div style="width:100%; height: 2px; background: #eee; margin-bottom: 1.5rem;"></div>
+
+                <table class="medical-table">
+                    <tr>
+                        <td>PATIENT NAME</td>
+                        <td>Abhishek</td>
+                    </tr>
+                    <tr>
+                        <td>DATE</td>
+                        <td id="dynamic-date">--/--/--</td>
+                    </tr>
+                    <tr>
+                        <td>PHYSICIAN</td>
+                        <td>Dr. Jahanvi MBBS</td>
+                    </tr>
+                    <tr>
+                        <td>BLOOD TYPE</td>
+                        <td>LOVE+</td>
+                    </tr>
+                    <tr>
+                        <td>STATUS</td>
+                        <td class="status-blink">CRITICAL ❤️</td>
+                    </tr>
+                </table>
+
+                <p style="font-size: 0.9rem; color: var(--text-light);">*Patient exhibits signs of extreme adorableness.
+                </p>
+            </div>
+            <button class="nav-next" onclick="nextPage()" aria-label="Next Page">➜</button>
+        </section>
+
+        <!-- PAGE 3: CHIEF COMPLAINT -->
+        <section id="page-3" class="page" aria-label="Chief Complaint">
+            <div class="card">
+                <h2>Chief Complaint</h2>
+                <div class="heart-beat">💓</div>
+                <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 10px; min-height: 120px;">
+                    <p id="typing-text" class="mono-text typing-cursor"></p>
+                </div>
+            </div>
+            <button class="nav-next" onclick="nextPage()" aria-label="Next Page">➜</button>
+        </section>
+
+        <!-- PAGE 4: SYMPTOMS -->
+        <section id="page-4" class="page" aria-label="Review of Symptoms">
+            <div class="card">
+                <h2>Review of Symptoms</h2>
+                <p style="text-align: center; margin-bottom: 1.5rem;">Patient reports the following persistent symptoms:
+                </p>
+                <ul class="symptom-list">
+                    <li><span class="symptom-icon">🦋</span> Butterflies in stomach</li>
+                    <li><span class="symptom-icon">😊</span> Uncontrollable smiling</li>
+                    <li><span class="symptom-icon">💭</span> Inability to focus (daydreaming)</li>
+                    <li><span class="symptom-icon">⚡</span> Elevated heart rate near you</li>
+                </ul>
+            </div>
+            <button class="nav-next" onclick="nextPage()" aria-label="Next Page">➜</button>
+        </section>
+
+        <!-- PAGE 5: DIAGNOSIS -->
+        <section id="page-5" class="page" aria-label="Diagnosis">
+            <div class="card" style="background: #fff0f3; border: 2px solid var(--primary);">
+                <h2>Assessment & Diagnosis</h2>
+                <div style="text-align: center; font-size: 3rem; margin: 1rem 0;">🔬💘</div>
+
+                <div style="background: white; padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                    <p><strong>Primary Diagnosis:</strong><br><span
+                            style="color: var(--primary); font-size: 1.2rem; font-weight: bold;">Chronic Love
+                            Syndrome</span></p>
+                </div>
+
+                <div style="background: white; padding: 1rem; border-radius: 10px;">
+                    <p><strong>Severity:</strong> Permanent</p>
+                    <p><strong>Prognosis:</strong> Happily Ever After</p>
+                </div>
+            </div>
+            <button class="nav-next" onclick="nextPage()" aria-label="Next Page">➜</button>
+        </section>
+
+        <!-- PAGE 6: TREATMENT -->
+        <section id="page-6" class="page" aria-label="Treatment Plan">
+            <div class="card prescription-pad">
+                <div class="rx-header">Rx</div>
+                <h2>Treatment Plan</h2>
+                <p style="border-bottom: 1px solid #ddd; padding-bottom: 1rem; text-align: center;">Dr. Jahanvi MBBS
+                    recommends
+                    immediate administration of:</p>
+
+                <ul style="list-style: none; margin: 1.5rem 0;">
+                    <li style="margin-bottom: 10px;"><strong>1. Date Night</strong> (Dinner & Fun)</li>
+                    <li style="margin-bottom: 10px;"><strong>2. Unlimited Hugs</strong> (Daily)</li>
+                    <li style="margin-bottom: 10px;"><strong>3. One (1) Valentine</strong> (You)</li>
+                </ul>
+
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 1rem;">
+                    <span style="font-size: 2rem;">🥀</span>
+                    <span
+                        style="font-family: var(--font-script); font-size: 1.5rem; transform: rotate(-5deg); color: var(--primary);">Dr.
+                        Jahanvi MBBS</span>
+                </div>
+            </div>
+            <button class="nav-next" onclick="nextPage()" aria-label="Next Page">➜</button>
+        </section>
+
+        <!-- PAGE 7: FINAL QUESTION -->
+        <section id="page-7" class="page" aria-label="Final Question">
+            <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+                <h2 style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;">One Final Question...</h2>
+                <p style="font-size: 1.2rem; margin-bottom: 3rem;">Will you be my Valentine?</p>
+
+                <div class="btn-group" style="flex-direction: column;">
+                    <button class="btn" style="font-size: 1.2rem; padding: 1rem;" onclick="acceptProposal()">
+                        💖 YES, I Accept!
+                    </button>
+                    <button class="btn btn-secondary" onclick="rejectProposal()">
+                        ❌ No / Reject
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- OVERLAYS -->
+    <div id="success-overlay" class="full-screen-overlay">
+        <h1 style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;">CASE CLOSED! ❤️</h1>
+        <p style="font-size: 1.5rem;">Treatment Plan Accepted.</p>
+        <p>You are officially my Valentine.</p>
+        <div style="font-size: 4rem; margin-top: 1rem; animation: heartBeat 1s infinite;">🥰</div>
+
+        <!-- SIGNATURE BANNER -->
+        <div class="signature-banner">
+            <div class="signature-content">Forever yours mi amor ❤️ AJ</div>
+            <!-- Decorative Flowers for Banner -->
+            <div class="decor-flower" style="top: -15px; left: -15px; font-size: 2rem;">🌸</div>
+            <div class="decor-flower" style="bottom: -10px; right: -10px; font-size: 2rem; animation-delay: 1s;">🌺
+            </div>
+            <div class="decor-flower" style="top: 50%; right: -25px; font-size: 1.5rem; animation-delay: 2s;">✨</div>
+            <div class="decor-flower" style="top: -20px; right: 20%; font-size: 1.2rem; animation-delay: 1.5s;">🍃</div>
+        </div>
+
+        <!-- FLOWER CANVAS BEHIND -->
+        <canvas id="flower-canvas"></canvas>
+    </div>
+
+    <div id="reject-overlay" class="full-screen-overlay">
+        <h1 style="font-size: 2rem; color: var(--text-main);">Error 404</h1>
+        <p>Rejection Module Not Found.</p>
+        <div style="font-size: 4rem; margin: 2rem 0;">🥺</div>
+        <p>The system is too cute to handle a rejection.</p>
+        <button class="btn" style="margin-top: 2rem;" onclick="closeReject()">Reconsider?</button>
+    </div>
+
+    <canvas id="confetti"></canvas>
+
+    <script>
+        // --- STATE MANAGEMENT ---
+        let currentPage = 1;
+        const totalPages = 7;
+
+        function updatePages() {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                const pageNum = parseInt(page.id.split('-')[1]);
+                page.classList.remove('active', 'prev');
+
+                if (pageNum === currentPage) {
+                    page.classList.add('active');
+                } else if (pageNum < currentPage) {
+                    page.classList.add('prev');
+                }
+            });
+
+            // Special Actions per page
+            if (currentPage === 2) {
+                // Set Date
+                const now = new Date();
+                document.getElementById('dynamic-date').textContent = now.toLocaleDateString();
+            }
+            if (currentPage === 3) {
+                // Trigger Typing
+                startTyping();
+            }
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePages();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePages();
+            }
+        }
+
+        // --- TYPING EFFECT ---
+        let typingStarted = false;
+        function startTyping() {
+            if (typingStarted) return;
+            typingStarted = true;
+
+            const text = "Patient presents with elevated heart rate, loss of focus, and constant thoughts of one specific person. Symptoms worsen when subject is nearby.";
+            const element = document.getElementById('typing-text');
+            element.textContent = "";
+            let i = 0;
+
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, 50);
+                } else {
+                    element.classList.remove('typing-cursor');
+                }
+            }
+            setTimeout(type, 500);
+        }
+
+        let flowersStarted = false;
+        // --- INTERACTION ---
+        function acceptProposal() {
+            if (flowersStarted) return;
+            flowersStarted = true;
+            document.getElementById('success-overlay').classList.add('visible');
+            startConfetti();
+            setTimeout(startFlowers, 500); // Start flower slightly after
+        }
+
+        function rejectProposal() {
+            document.getElementById('reject-overlay').classList.add('visible');
+        }
+
+        function closeReject() {
+            document.getElementById('reject-overlay').classList.remove('visible');
+        }
+
+        // --- CONFETTI ENGINE (No Libraries) ---
+        function startConfetti() {
+            const canvas = document.getElementById('confetti');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#d90429', '#ef233c', '#ffccd5', '#fff', '#FFD700'];
+
+            function Particle() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 20; // Start at bottom
+                this.size = Math.random() * 10 + 5;
+                this.speedY = Math.random() * -8 - 5; // Shoot up fast
+                this.speedX = (Math.random() - 0.5) * 6;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.rotation = Math.random() * 360;
+                this.spin = (Math.random() - 0.5) * 10;
+                this.type = Math.random() > 0.5 ? 'heart' : 'confetti';
+            }
+
+            // Initial burst
+            for (let i = 0; i < 100; i++) particles.push(new Particle());
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Continuous spawning
+                if (particles.length < 150) {
+                    const p = new Particle();
+                    p.y = canvas.height + 10; // Reset to bottom for new ones if we want continuous rain? 
+                    // Actually for "fountain" effect, let's span from bottom
+                    particles.push(p);
+                }
+
+                particles.forEach((p, index) => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += p.spin;
+                    p.speedY += 0.15; // Gravity
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotation * Math.PI / 180);
+                    ctx.fillStyle = p.color;
+
+                    if (p.type === 'heart') {
+                        // Simple heart shape approximation
+                        ctx.beginPath();
+                        const topCurveHeight = p.size * 0.3;
+                        ctx.moveTo(0, topCurveHeight);
+                        ctx.bezierCurveTo(0, 0, -p.size / 2, 0, -p.size / 2, topCurveHeight);
+                        ctx.bezierCurveTo(-p.size / 2, (p.size + topCurveHeight) / 2, 0, p.size, 0, p.size);
+                        ctx.bezierCurveTo(0, p.size, p.size / 2, (p.size + topCurveHeight) / 2, p.size / 2, topCurveHeight);
+                        ctx.bezierCurveTo(p.size / 2, 0, 0, 0, 0, topCurveHeight);
+                        ctx.fill();
+                    } else {
+                        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    }
+                    ctx.restore();
+
+                    // Recycle particles when they fall off screen
+                    if (p.y > canvas.height + 50) {
+                        // Reset to bottom to create fountain effect loop
+                        p.y = canvas.height + 10;
+                        p.speedY = Math.random() * -8 - 5;
+                        p.x = Math.random() * canvas.width;
+                    }
+                });
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // --- FLOWER ANIMATION (Procedural Garden) ---
+        function startFlowers() {
+            const canvas = document.getElementById('flower-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = 250; // Match CSS height
+
+            const flowers = [];
+
+            class Flower {
+                constructor(x, y, color) {
+                    this.x = x;
+                    this.y = y;
+                    this.color = color;
+                    this.stemHeight = 0;
+                    this.maxHeight = Math.random() * 100 + 80; // Shorter flowers (was 150+100)
+                    this.bloomSize = 0;
+                    this.maxBloom = Math.random() * 20 + 15;
+                    this.growthSpeed = Math.random() * 1 + 0.5;
+                    this.angle = (Math.random() - 0.5) * 0.2; // Slight curve
+                    this.bloomed = false;
+                }
+
+                grow() {
+                    // Stem growth
+                    if (this.stemHeight < this.maxHeight) {
+                        this.stemHeight += this.growthSpeed;
+                        this.x += Math.sin(this.stemHeight * 0.05) * 0.5; // Wiggle
+                    } else {
+                        // Bloom
+                        if (this.bloomSize < this.maxBloom) {
+                            this.bloomSize += 0.2;
+                        } else {
+                            this.bloomed = true;
+                        }
+                    }
+                }
+
+                draw() {
+                    // Swaying Motion
+                    const sway = Math.sin(Date.now() / 1000 + this.x) * 10 * (this.stemHeight / this.maxHeight);
+
+                    // Draw Stem
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    // Quadratic curve for stem with sway
+                    const endX = this.x + Math.sin(this.angle) * this.stemHeight + sway;
+                    const endY = this.y - this.stemHeight;
+                    ctx.quadraticCurveTo(this.x, this.y - this.stemHeight / 2, endX, endY);
+                    ctx.strokeStyle = '#2d6a4f'; /* darker green */
+                    ctx.lineWidth = 4;
+                    ctx.stroke();
+
+                    // Draw Flower Head
+                    if (this.stemHeight > this.maxHeight * 0.8) {
+                        ctx.save();
+                        ctx.translate(endX, endY);
+                        ctx.rotate(sway * 0.05); // Rotate head slightly with sway
+                        ctx.fillStyle = this.color;
+
+                        // Simple petal drawing
+                        for (let i = 0; i < 6; i++) {
+                            ctx.rotate(Math.PI / 3);
+                            ctx.beginPath();
+                            ctx.ellipse(0, -this.bloomSize / 2, this.bloomSize / 3, this.bloomSize, 0, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+
+                        // Center
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.bloomSize / 3, 0, Math.PI * 2);
+                        ctx.fillStyle = '#ffb703';
+                        ctx.fill();
+
+                        ctx.restore();
+                    }
+
+                    // Leaves
+                    if (this.stemHeight > 50) {
+                        ctx.beginPath();
+                        ctx.moveTo(this.x, this.y - 40);
+                        ctx.quadraticCurveTo(this.x + 20, this.y - 50, this.x + 25, this.y - 30);
+                        ctx.quadraticCurveTo(this.x + 10, this.y - 30, this.x, this.y - 40);
+                        ctx.fillStyle = '#40916c';
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // Create a row of flowers
+            const flowerColors = ['#ff006e', '#fb5607', '#3a86ff', '#8338ec', '#ffbe0b'];
+            for (let i = 0; i < window.innerWidth; i += 60) {
+                // Randomize x slightly
+                const x = i + Math.random() * 30;
+                const color = flowerColors[Math.floor(Math.random() * flowerColors.length)];
+                flowers.push(new Flower(x, canvas.height, color));
+            }
+
+            function animateFlowers() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                flowers.forEach(flower => {
+                    flower.grow();
+                    flower.draw();
+                });
+                requestAnimationFrame(animateFlowers);
+            }
+
+            animateFlowers();
+        }
+
+        // --- TWO-STEP INTERACTION (Expansion Flow) ---
+        const symptomList = document.querySelector('.symptom-list');
+
+        // Extended Data
+        const symptomData = {
+            "Butterflies": {
+                title: "Butterflies in Stomach",
+                reason: "Clinical Note: Occurs due to sudden emotional proximity and an unexpected surge of affection when thinking about you.",
+                icon: "🦋",
+                images: ["./assets/img1.png", "./assets/img2.jpg"]
+            },
+            "Smiling": {
+                title: "Uncontrollable Smiling",
+                reason: "Clinical Note: A subconscious response triggered by thoughts of shared moments and emotional safety.",
+                icon: "😊",
+                images: ["./assets/img3.png"]
+            },
+            "Focus": {
+                title: "Inability to Focus",
+                reason: "Clinical Note: Caused by recurring daydreams involving you and imagined future moments.",
+                icon: "💭",
+                images: ["./assets/img4.jpg", "./assets/img1.png"]
+            },
+            "Heart": {
+                title: "Elevated Heart Rate",
+                reason: "Clinical Note: Observed when emotional closeness increases beyond normal physiological limits.",
+                icon: "⚡",
+                images: ["./assets/img2.jpg", "./assets/img4.jpg"]
+            }
+        };
+
+        // Render List Dynamically
+        function renderSymptoms() {
+            symptomList.innerHTML = ''; // Clear default HTML
+            const keys = ["Butterflies", "Smiling", "Focus", "Heart"];
+
+            keys.forEach(key => {
+                const data = symptomData[key];
+                const li = document.createElement('li');
+                li.setAttribute('role', 'button');
+                li.setAttribute('tabindex', '0');
+
+                // Construct HTML Structure
+                // Remove prefix if present to avoid double label
+                let reasonText = data.reason;
+                if (reasonText.startsWith("Clinical Note: ")) {
+                    reasonText = reasonText.replace("Clinical Note: ", "");
+                }
+
+                li.innerHTML = `
+                    <div class="symptom-header">
+                        <span class="symptom-icon">${data.icon}</span>
+                        <span class="symptom-title">${data.title}</span>
+                    </div>
+                    <div class="symptom-reason">
+                        <span class="clinical-label">Clinical Note</span>
+                        <p class="clinical-text">${reasonText}</p>
+                        <div class="click-hint">Click to see evidence...</div>
+                        <div class="symptom-photos-inline">
+                            ${data.images.map(src => `<img src="${src}" class="inline-photo" alt="Romantic evidence">`).join('')}
+                        </div>
+                    </div>
+                `;
+
+                // Logic: Click 1 (Expand Reason), Click 2 (Show Photos), Click 3 (Collapse)
+                li.onclick = (e) => {
+                    e.stopPropagation(); // Prevent bubbling
+
+                    // Check current state
+                    const isActive = li.classList.contains('active');
+                    const hasPhotos = li.classList.contains('show-photos');
+
+                    if (!isActive) {
+                        // State 1: Expand
+                        closeAllSymptoms();
+                        li.classList.add('active');
+                    } else if (isActive && !hasPhotos) {
+                        // State 2: Show Photos
+                        li.classList.add('show-photos');
+                        li.querySelector('.click-hint').style.display = 'none'; // Hide hint
+                    } else {
+                        // State 3: Collapse
+                        li.classList.remove('active', 'show-photos');
+                        li.querySelector('.click-hint').style.display = 'block'; // Reset hint
+                    }
+                };
+
+                symptomList.appendChild(li);
+            });
+        }
+
+        function closeAllSymptoms() {
+            document.querySelectorAll('.symptom-list li').forEach(li => {
+                li.classList.remove('active', 'show-photos');
+                const hint = li.querySelector('.click-hint');
+                if (hint) hint.style.display = 'block';
+            });
+        }
+
+        // Init
+        renderSymptoms();
+
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.symptom-list')) {
+                closeAllSymptoms();
+            }
+        });
+
+        // Keyboard Nav
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Enter') nextPage();
+            if (e.key === 'ArrowLeft') prevPage();
+        });
+
+    </script>
+</body>
+
+</html>
